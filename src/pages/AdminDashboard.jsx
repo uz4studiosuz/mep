@@ -77,9 +77,16 @@ const DEFAULT_CENTER = [41.311081, 69.240562];
 function FitBounds({ positions }) {
   const map = useMap();
   useEffect(() => {
-    if (positions.length >= 2) {
-      const bounds = L.latLngBounds(positions);
-      map.fitBounds(bounds, { padding: [60, 60], animate: true });
+    const valid = positions.filter(
+      (p) => Array.isArray(p) && p.length === 2 && p.every((v) => typeof v === "number" && isFinite(v))
+    );
+    if (valid.length >= 2) {
+      try {
+        const bounds = L.latLngBounds(valid);
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [60, 60], animate: true });
+        }
+      } catch {}
     }
   }, [positions, map]);
   return null;
@@ -116,8 +123,13 @@ function RoutingMapModal({ request, adminPos, onClose, onAccept }) {
 
   const adminLat = adminPos?.lat || DEFAULT_CENTER[0];
   const adminLng = adminPos?.lng || DEFAULT_CENTER[1];
-  const userLat = request.lat;
-  const userLng = request.lng;
+  // If user's GPS was not captured, place them slightly offset from admin for demo
+  const userLat = (request.lat != null && !isNaN(request.lat))
+    ? request.lat
+    : adminLat + 0.03;
+  const userLng = (request.lng != null && !isNaN(request.lng))
+    ? request.lng
+    : adminLng + 0.04;
 
   useEffect(() => {
     fetchOsrmRoute(adminLat, adminLng, userLat, userLng).then((r) => {
@@ -126,9 +138,7 @@ function RoutingMapModal({ request, adminPos, onClose, onAccept }) {
     });
   }, [adminLat, adminLng, userLat, userLng]);
 
-  const allPositions = route
-    ? [[adminLat, adminLng], [userLat, userLng]]
-    : [];
+  const allPositions = [[adminLat, adminLng], [userLat, userLng]];
 
   return (
     <motion.div
