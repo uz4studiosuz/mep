@@ -214,49 +214,50 @@ function RoutingMapModal({ request, adminPos, onClose, onAccept }) {
           />
 
           {/* Admin marker */}
-          <Marker position={[adminLat, adminLng]} icon={adminIcon}>
-            <Popup>
-              <div className="text-center p-1">
-                <p className="font-bold text-blue-700">🚑 Ambulans joylashuvi</p>
-                <p className="text-xs text-gray-500 mt-0.5">Sizning pozitsiyangiz</p>
-              </div>
-            </Popup>
-          </Marker>
+          {isFinite(adminLat) && isFinite(adminLng) && (
+            <Marker position={[adminLat, adminLng]} icon={adminIcon}>
+              <Popup>
+                <div className="text-center p-1">
+                  <p className="font-bold text-blue-700">🚑 Ambulans joylashuvi</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Sizning pozitsiyangiz</p>
+                </div>
+              </Popup>
+            </Marker>
+          )}
 
           {/* User marker */}
-          <Marker position={[userLat, userLng]} icon={userIcon}>
-            <Popup>
-              <div className="text-center p-1">
-                <p className="font-bold text-red-600">🏥 Bemor joylashuvi</p>
-                <p className="text-xs text-gray-500 mt-0.5 max-w-[180px] line-clamp-2">
-                  {request.placeName || "Noma'lum manzil"}
-                </p>
-              </div>
-            </Popup>
-          </Marker>
+          {isFinite(userLat) && isFinite(userLng) && (
+            <Marker position={[userLat, userLng]} icon={userIcon}>
+              <Popup>
+                <div className="text-center p-1">
+                  <p className="font-bold text-red-600">🏥 Bemor joylashuvi</p>
+                  <p className="text-xs text-gray-500 mt-0.5 max-w-[180px] line-clamp-2">
+                    {request.placeName || "Noma'lum manzil"}
+                  </p>
+                </div>
+              </Popup>
+            </Marker>
+          )}
 
           {/* Route polyline */}
-          {route && (
+          {route && route.coords && route.coords.length >= 2 && (
             <>
-              {/* Shadow */}
               <Polyline
                 positions={route.coords}
                 color="#1d4ed8"
                 weight={8}
                 opacity={0.2}
               />
-              {/* Main line */}
               <Polyline
                 positions={route.coords}
                 color="#3b82f6"
                 weight={5}
                 opacity={0.9}
-                dashArray={null}
               />
             </>
           )}
 
-          {allPositions.length >= 2 && <FitBounds positions={allPositions} />}
+          <FitBounds positions={allPositions} />}
         </MapContainer>
 
         {/* Legend overlay */}
