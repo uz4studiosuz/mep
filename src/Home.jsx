@@ -33,6 +33,89 @@ L.Icon.Default.mergeOptions({
 
 const DEFAULT_CENTER = [41.311081, 69.240562];
 
+const DISEASES_LIST = [
+  {
+    name: "Arterial gipertenziya (qon bosimi, bosim kasalligi)",
+    contraindications: [
+      "Adrenalinli ukollar",
+      "Kuchli kofeinli dorilar",
+      "NSAID (ko‘p miqdorda)"
+    ]
+  },
+  {
+    name: "Qandli diabet (saxar, qand kasalligi)",
+    contraindications: [
+      "Glyukoza eritmalari (nazoratsiz)",
+      "Shirin siroplar",
+      "Kortikosteroidlar (ehtiyot bilan)"
+    ]
+  },
+  {
+    name: "Bronxial astma (astma, nafas qisishi)",
+    contraindications: [
+      "Beta-blokatorlar",
+      "Aspirin (ba’zi holatda)",
+      "Kuchli hidli aerozollar"
+    ]
+  },
+  {
+    name: "Surunkali gastrit (oshqozon yallig‘lanishi, oshqozon og‘rigi)",
+    contraindications: [
+      "Aspirin",
+      "Ibuprofen va o‘xshash NSAID",
+      "Spirtli dorilar"
+    ]
+  },
+  {
+    name: "Oshqozon va 12 barmoq ichak yarasi (yara, oshqozon yarasi)",
+    contraindications: [
+      "Diklofenak, ibuprofen",
+      "Kortikosteroidlar",
+      "Achchiq dori vositalari"
+    ]
+  },
+  {
+    name: "Jigar kasalliklari (gepatit, sirroz) (jigar kasalligi)",
+    contraindications: [
+      "Paratsetamol (ko‘p miqdorda)",
+      "Spirtli dorilar",
+      "Ba’zi kuchli antibiotiklar"
+    ]
+  },
+  {
+    name: "Buyrak yetishmovchiligi (buyrak ishlamasligi, buyrak kasalligi)",
+    contraindications: [
+      "NSAID dorilar",
+      "Aminoglikozid antibiotiklar",
+      "Kontrast moddali ukollar"
+    ]
+  },
+  {
+    name: "Yurak yetishmovchiligi (yurak zaifligi)",
+    contraindications: [
+      "Ortiqcha tomchilab suyuqlik berish",
+      "Ba’zi antiaritmik dorilar",
+      "NSAID"
+    ]
+  },
+  {
+    name: "Allergik kasalliklar (allergiya, toshma, qichishish)",
+    contraindications: [
+      "Allergiya beruvchi dorilar",
+      "Antibiotiklar (tekshiruvsiz)",
+      "Ba’zi vitamin komplekslari"
+    ]
+  },
+  {
+    name: "Epilepsiya (tutqanoq kasalligi)",
+    contraindications: [
+      "Spirtli preparatlar",
+      "Ba’zi antidepressantlar",
+      "Ayrim uyqu dorilari"
+    ]
+  }
+];
+
 function RecenterMap({ lat, lng }) {
   const map = useMap();
   useEffect(() => {
@@ -58,6 +141,7 @@ function EmergencyModal({ open, onClose, position, placeName }) {
     // Save request to localStorage so admin can see it
     const reqId = `MEP-${Math.floor(1000 + Math.random() * 9000)}`;
     const now = new Date();
+    const randomDisease = DISEASES_LIST[Math.floor(Math.random() * DISEASES_LIST.length)];
     saveRequest({
       id: reqId,
       timestamp: now.toISOString(),
@@ -66,6 +150,7 @@ function EmergencyModal({ open, onClose, position, placeName }) {
       lng: position?.lng || null,
       placeName: placeName || "Joylashuv aniqlanmagan",
       status: "pending",
+      disease: randomDisease,
     });
     timerRef.current = setTimeout(() => setStage("sent"), 2200);
   };

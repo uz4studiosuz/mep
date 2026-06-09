@@ -86,7 +86,7 @@ function FitBounds({ positions }) {
         if (bounds.isValid()) {
           map.fitBounds(bounds, { padding: [60, 60], animate: true });
         }
-      } catch {}
+      } catch { }
     }
   }, [positions, map]);
   return null;
@@ -104,7 +104,7 @@ async function fetchOsrmRoute(adminLat, adminLng, userLat, userLng) {
       const dur = Math.ceil(data.routes[0].duration / 60);
       return { coords, dist, dur };
     }
-  } catch {}
+  } catch { }
   // Fallback: straight line
   return {
     coords: [
@@ -257,7 +257,7 @@ function RoutingMapModal({ request, adminPos, onClose, onAccept }) {
             </>
           )}
 
-          <FitBounds positions={allPositions} />}
+          <FitBounds positions={allPositions} />
         </MapContainer>
 
         {/* Legend overlay */}
@@ -343,13 +343,12 @@ function RequestCard({ req, index, onNavigate }) {
       {/* Card header */}
       <div className="px-4 pt-4 pb-3 flex items-start gap-3">
         <div
-          className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${
-            req.status === "pending"
+          className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ${req.status === "pending"
               ? "bg-red-100"
               : req.status === "accepted"
-              ? "bg-green-100"
-              : "bg-slate-100"
-          }`}
+                ? "bg-green-100"
+                : "bg-slate-100"
+            }`}
         >
           {req.status === "pending" ? (
             <FaAmbulance className="text-red-500 text-lg" />
@@ -384,6 +383,26 @@ function RequestCard({ req, index, onNavigate }) {
           {req.placeName || "Joylashuv aniqlanmagan"}
         </p>
       </div>
+
+      {/* Disease info */}
+      {req.disease && (
+        <div className="px-4 pb-3">
+          <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+            <p className="text-xs font-bold text-red-700 mb-1">🏥 Kasallik varaqasi:</p>
+            <p className="text-sm font-semibold text-gray-800 mb-2">{req.disease.name}</p>
+            <div className="bg-white rounded-lg p-2 border border-red-100">
+              <p className="text-xs font-bold text-red-600 flex items-center gap-1 mb-1">
+                <IoMdAlert /> Mumkin emas:
+              </p>
+              <ul className="list-disc pl-4 text-xs text-gray-700 space-y-0.5">
+                {req.disease.contraindications.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Coords pill */}
       {req.lat && req.lng && (
@@ -526,11 +545,10 @@ export default function AdminDashboard() {
               <button
                 onClick={getAdminLocation}
                 disabled={locating}
-                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  adminPos
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${adminPos
                     ? "bg-green-600/20 text-green-400 border border-green-600/30"
                     : "bg-white/10 text-slate-300 border border-white/20 hover:bg-white/20"
-                }`}
+                  }`}
               >
                 {locating ? (
                   <FaSpinner className="spin-slow" />
